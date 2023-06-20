@@ -3,11 +3,11 @@
     public int X { get; set; }
     public int Y { get; set; }
     public bool IsPowered { get; set; }
-    public RobotCommand?[] Commands { get; } = new RobotCommand?[3];
+    public IRobotCommand?[] Commands { get; } = new IRobotCommand?[3];
     
     public void Run()
     {
-        foreach (RobotCommand? command in Commands)
+        foreach (IRobotCommand? command in Commands)
         {
             command?.Run(this);
             Console.WriteLine($"[{X} {Y} {IsPowered}]");
@@ -15,57 +15,57 @@
     }
 }
 
-public abstract class RobotCommand
+public interface IRobotCommand
 {
-    public abstract void Run(Robot robot);
+    void Run(Robot robot);
 }
 
-public class OnCommand : RobotCommand
+public class OnCommand : IRobotCommand
 {
-    public override void Run(Robot robot)
+    public void Run(Robot robot)
     {
         robot.IsPowered = true;
     }
 }
 
-public class OffCommand : RobotCommand
+public class OffCommand : IRobotCommand
 {
-    public override void Run(Robot robot)
+    public void Run(Robot robot)
     {
         robot.IsPowered = false;
     }
 }
 
-public class NorthCommand : RobotCommand
+public class NorthCommand : IRobotCommand
 {
-    public override void Run(Robot robot)
+    public void Run(Robot robot)
     {
         if (robot.IsPowered)
             robot.Y += 1;
     }
 }
 
-public class SouthCommand : RobotCommand
+public class SouthCommand : IRobotCommand
 {
-    public override void Run(Robot robot)
+    public void Run(Robot robot)
     {
         if (robot.IsPowered)
             robot.Y -= 1;
     }
 }
 
-public class WestCommand : RobotCommand
+public class WestCommand : IRobotCommand
 {
-    public override void Run(Robot robot)
+    public void Run(Robot robot)
     {
         if (robot.IsPowered)
             robot.X -= 1;
     }
 }
 
-public class EastCommand : RobotCommand
+public class EastCommand : IRobotCommand
 {
-    public override void Run(Robot robot)
+    public void Run(Robot robot)
     {
         if (robot.IsPowered)
             robot.X += 1;
@@ -81,7 +81,7 @@ public class Program
         for (int i = 0; i < 3; i++)
         {
             string? input = Console.ReadLine();
-            RobotCommand command;
+            IRobotCommand command;
             
             if (input == "on")
                 command = new OnCommand();
@@ -100,6 +100,7 @@ public class Program
             
             robot.Commands[i] = command;
         }
+        
         robot.Run();
     }
 }
